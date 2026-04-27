@@ -184,4 +184,7 @@ client.create_mailbox_if_not_exists()
 update_categories()
 
 # alternatively run_nli()
-run_nli()
+run_embeddings()
+
+# TODO delete gmail token? -> config
+# TODO make used model configurable
