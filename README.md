@@ -95,7 +95,7 @@ You can run it like this in the project root directory:
 ```
 ./unix-setup.sh --help
 ```
-- on Windows:
+- on Windows (NOT AVAILABLE YET):
 ```
 powershell -ExecutionPolicy Bypass -File .\windows-setup.ps1
 ```
