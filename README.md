@@ -59,7 +59,7 @@ The classifier and token persistence behavior are configured in `config.json`.
 Use these keys:
 
 ```json5
-{
+"preferences": {
   "model_type": "embedding",
   "store_gmail_token": false
 }

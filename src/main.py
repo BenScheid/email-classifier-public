@@ -186,14 +186,14 @@ client.load_credentials()
 client.create_mailbox_if_not_exists()
 update_categories()
 
-model_type = cfg.get_main()["model_type"]
-if model_type == "embedding":
+preferences = cfg.get_main()["preferences"]
+if preferences["model_type"] == "embedding":
     run_embeddings()
-elif model_type == "nli":
+elif preferences["model_type"] == "nli":
     run_nli()
 else:
     sys.exit(1)
 
-store_token = cfg.get_main()["store_gmail_token"]
+store_token = preferences["store_gmail_token"]
 if store_token is None or store_token == False:
     os.remove(TOKEN_PATH)
