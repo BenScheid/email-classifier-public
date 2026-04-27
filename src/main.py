@@ -184,4 +184,4 @@ client.create_mailbox_if_not_exists()
 update_categories()
 
 # alternatively run_nli()
-run_embeddings()
+run_nli()
