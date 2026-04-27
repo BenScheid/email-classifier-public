@@ -1,0 +1,26 @@
+{
+    "categories": [
+        {
+            "name": "Newsletter",
+            "description": "Recurring subscription emails, mailing-list updates, product announcements, blog digests, event promotions, release notes, or marketing campaigns sent in bulk by automated systems and usually not expecting a personal reply."
+        },
+        {
+            "name": "Personal",
+            "description": "Direct one-to-one emails from real people about personal matters, casual conversation, invitations, greetings, family topics, plans, or other non-business communication that is not automated and not part of a mass mailing."
+        },
+        {
+            "name": "Billing",
+            "description": "Emails about invoices, bills, receipts, payments, refunds, charges, pricing, subscription fees, transaction confirmations, or payment problems, including reminders and questions about money owed or paid."
+        },
+        {
+            "name": "Accounts",
+            "description": "Emails about account access or account management, such as password resets, login alerts, email verification, security notices, profile changes, subscription settings, account updates, or account closure requests."
+        }
+    ],
+    "parentMailBox": "",
+    "default_category_name": "Default",
+    "optimizations": {
+        "email_snippet_length": -1,
+        "overwrite_hyper_links": "<URL>"
+    }
+}

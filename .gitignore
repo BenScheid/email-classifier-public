@@ -3,5 +3,4 @@ models/
 __pycache__/
 .configs/
 .env
-config.json
 .codex
