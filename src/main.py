@@ -6,6 +6,9 @@ import nli_model as nli
 import embedding_model as emb
 import json
 import numpy as np
+import sys
+import os
+from gmail_client import TOKEN_PATH
 
 MIN_SCORE = 0.55
 DEFAULT_CATEGORY = {
@@ -183,8 +186,14 @@ client.load_credentials()
 client.create_mailbox_if_not_exists()
 update_categories()
 
-# alternatively run_nli()
-run_embeddings()
+model_type = cfg.get_main()["model_type"]
+if model_type == "embedding":
+    run_embeddings()
+elif model_type == "nli":
+    run_nli()
+else:
+    sys.exit(1)
 
-# TODO delete gmail token? -> config
-# TODO make used model configurable
+store_token = cfg.get_main()["store_gmail_token"]
+if store_token is None or store_token == False:
+    os.remove(TOKEN_PATH)

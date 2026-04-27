@@ -61,3 +61,41 @@ At the bottom of `src/main.py`, only one of these lines should be active:
 ```python
 run_embeddings()
 # run_nli()
+```
+
+## Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/BenScheid/email-classifier-public.git
+cd email-classifier-public
+```
+### 2. Create Gmail OAuth credentials
+
+Before running the project, you need to create OAuth credentials for the Gmail API.
+
+Go to:
+
+https://console.cloud.google.com/apis/credentials
+
+Then:
+
+1) Create or select a Google Cloud project.
+2) Enable the Gmail API
+3) Create OAuth client credentials for a Desktop app.
+4) Download the credentials file
+
+### 3. Run the setup script
+
+The repository includes a setup script that creates the virtual environment, installs dependencies, creates the required folders, and can also copy your Gmail credentials file automatically into the correct location. Make sure to include all necessary flags for your case. They can be listed with --help or -h flag.
+
+You can run it like this in the project root directory:
+- on Linux/MACOS:
+```
+./unix-setup.sh --help
+```
+- on Windows:
+```
+powershell -ExecutionPolicy Bypass -File .\windows-setup.ps1
+```

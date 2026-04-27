@@ -22,5 +22,7 @@
     "optimizations": {
         "email_snippet_length": -1,
         "overwrite_hyper_links": "<URL>"
-    }
+    },
+    "store_gmail_token": false,
+    "model_type": "embedding" 
 }
