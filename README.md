@@ -52,16 +52,25 @@ The processing flow is:
 
 If no category passes the minimum score, the email is moved to the default category.
 
-## Current default classifier
+## Model and token settings
 
-The current version is intended to use the **embedding pipeline** by default.
+The classifier and token persistence behavior are configured in `config.json`.
 
-At the bottom of `src/main.py`, only one of these lines should be active:
+Use these keys:
 
-```python
-run_embeddings()
-# run_nli()
+```json5
+{
+  "model_type": "embedding",
+  "store_gmail_token": false
+}
 ```
+
+- `model_type`:
+  - `"embedding"` runs the embedding pipeline (`intfloat/e5-large-v2`)
+  - `"nli"` runs the NLI pipeline (`facebook/bart-large-mnli`)
+- `store_gmail_token`:
+  - `true` keeps `.configs/token.json` so future runs can reuse the token
+  - `false` removes `.configs/token.json` at the end of the run, but requires Google login for each run
 
 ## Setup
 
