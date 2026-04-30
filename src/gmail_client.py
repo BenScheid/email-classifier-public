@@ -40,21 +40,6 @@ def get_service():
 def get_inbox_id():
     return "INBOX"
 
-# TODO remove this func - example from dec
-def load_from_gmail():
-    try:
-        service = get_service()
-        # Call the Gmail API
-        service = build("gmail", "v1", credentials=credentials)
-        results = service.users().labels().list(userId="me").execute()
-        
-        for obj in results["labels"]:
-            print(obj["name"])
-
-    except HttpError as error:
-        # TODO(developer) - Handle errors from gmail API.
-        print(f"An error occurred: {error}")
-
 def create_mailboxes(names:list, parent:str = None):
     label_builder = get_service().users().labels()
     prefix=""

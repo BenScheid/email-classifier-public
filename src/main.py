@@ -11,10 +11,6 @@ import os
 from gmail_client import TOKEN_PATH
 
 MIN_SCORE = 0.55
-DEFAULT_CATEGORY = {
-    "name": "Default", # overrideable
-    "description": "All emails that could not be reliably put into a given category"
-}
 
 def resolve_foreign_id(name: str, parent_name: str, foreign_ids: dict):
     direct = foreign_ids.get(name)
