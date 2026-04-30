@@ -6,20 +6,20 @@ set -euo pipefail
 # - Installs Python dependencies
 # - Creates local config/model folders
 # - Optionally copies Gmail OAuth credentials
-# - Optionally switches the active classifier pipeline in src/main.py
 # - Optionally starts the app
+#
+# Note:
+# The active model is now selected by the user in config.json.
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$SCRIPT_DIR"
 VENV_DIR="$REPO_DIR/.venv"
 CONFIG_DIR="$REPO_DIR/.configs"
 MODELS_DIR="$REPO_DIR/models"
-MAIN_FILE="$REPO_DIR/src/main.py"
 REQUIREMENTS_FILE="$REPO_DIR/requirements.txt"
 CONFIG_FILE="$REPO_DIR/config.json"
 CREDENTIALS_DEST="$CONFIG_DIR/credentials.json"
 
-PIPELINE="embeddings"
 RUN_APP=0
 CREDENTIALS_SOURCE=""
 PYTHON_BIN=""
@@ -27,20 +27,18 @@ PYTHON_BIN=""
 usage() {
   cat <<'EOF'
 Usage:
-  bash setup_email_classifier.sh [options]
+  bash unix-setup.sh [options]
 
 Options:
   --credentials PATH      Copy Gmail OAuth credentials.json from PATH
-  --pipeline NAME         Select active pipeline: embeddings or nli
   --run                   Start the app after setup
   --python BIN            Python binary to use (default: python3, then python)
   -h, --help              Show this help text
 
 Examples:
-  bash setup_email_classifier.sh
-  bash setup_email_classifier.sh --credentials ~/Downloads/credentials.json
-  bash setup_email_classifier.sh --pipeline nli
-  bash setup_email_classifier.sh --credentials ~/Downloads/credentials.json --pipeline embeddings --run
+  bash unix-setup.sh
+  bash unix-setup.sh --credentials ~/Downloads/credentials.json
+  bash unix-setup.sh --credentials ~/Downloads/credentials.json --run
 EOF
 }
 
@@ -58,11 +56,6 @@ while [[ $# -gt 0 ]]; do
     --credentials)
       [[ $# -ge 2 ]] || fail "--credentials requires a file path"
       CREDENTIALS_SOURCE="$2"
-      shift 2
-      ;;
-    --pipeline)
-      [[ $# -ge 2 ]] || fail "--pipeline requires 'embeddings' or 'nli'"
-      PIPELINE="$2"
       shift 2
       ;;
     --run)
@@ -84,12 +77,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ "$PIPELINE" != "embeddings" && "$PIPELINE" != "nli" ]]; then
-  fail "Invalid pipeline '$PIPELINE'. Use 'embeddings' or 'nli'."
-fi
-
-if [[ ! -f "$MAIN_FILE" || ! -f "$REQUIREMENTS_FILE" || ! -f "$CONFIG_FILE" ]]; then
-  fail "This script must be placed in the project root, next to src/, requirements.txt, and config.json."
+if [[ ! -f "$REQUIREMENTS_FILE" || ! -f "$CONFIG_FILE" ]]; then
+  fail "This script must be placed in the project root, next to requirements.txt and config.json."
 fi
 
 if [[ -z "$PYTHON_BIN" ]]; then
@@ -134,35 +123,15 @@ if [[ ! -f "$CREDENTIALS_DEST" ]]; then
   cat <<EOF
 
 [notice] Gmail credentials are not set up yet.
-Place your OAuth desktop credentials file here before running the app:
+Create your OAuth desktop credentials in Google Cloud:
+  https://console.cloud.google.com/apis/credentials
+
+Then place the downloaded file here:
   $CREDENTIALS_DEST
 EOF
 else
   log "Gmail credentials found"
 fi
-
-log "Setting active pipeline to '$PIPELINE' in src/main.py"
-python - <<'PY'
-from pathlib import Path
-import os, re, sys
-
-main_file = Path(os.environ['MAIN_FILE'])
-pipeline = os.environ['PIPELINE']
-text = main_file.read_text(encoding='utf-8')
-
-embedding_block = "run_embeddings()"
-nli_block = "run_nli()"
-
-if pipeline == 'embeddings':
-    text = re.sub(r'^\s*#?\s*run_embeddings\(\)\s*$', 'run_embeddings()', text, flags=re.MULTILINE)
-    text = re.sub(r'^\s*#?\s*run_nli\(\)\s*$', '# run_nli()', text, flags=re.MULTILINE)
-else:
-    text = re.sub(r'^\s*#?\s*run_embeddings\(\)\s*$', '# run_embeddings()', text, flags=re.MULTILINE)
-    text = re.sub(r'^\s*#?\s*run_nli\(\)\s*$', 'run_nli()', text, flags=re.MULTILINE)
-
-main_file.write_text(text, encoding='utf-8')
-print(f"Active pipeline set to: {pipeline}")
-PY
 
 cat <<EOF
 
@@ -172,12 +141,15 @@ Project root:      $REPO_DIR
 Virtual env:       $VENV_DIR
 Config folder:     $CONFIG_DIR
 Models folder:     $MODELS_DIR
-Active pipeline:   $PIPELINE
 
 Next steps:
 1. Make sure Gmail OAuth credentials exist at:
    $CREDENTIALS_DEST
-2. Edit config.json if you want to change categories.
+2. Edit config.json to configure:
+   - categories
+   - default category
+   - model_type
+   - store_gmail_token
 3. Run the project with:
    source "$VENV_DIR/bin/activate"
    python src/main.py
